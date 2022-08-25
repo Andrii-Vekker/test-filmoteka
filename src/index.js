@@ -15,32 +15,42 @@ let name = "";
 const refs = {
   form: document.querySelector(".search-form"),
   input: document.querySelector(".input"),
-  formBtn: document.querySelector(".formBtn"),
+  // formBtn: document.querySelector(".formBtn"),
   galleryContainer: document.querySelector(".gallery"),
-  loadMoreBtn: document.querySelector(".load-more"),
+  // loadMoreBtn: document.querySelector(".load-more"),
   gallery: document.querySelector(".gallery")
 };
 
 
 refs.form.addEventListener("submit", formHandler);
 
+const options = {
+  totalItems: 0,
+        itemsPerPage: 20,
+        visiblePages: 5,
+    centerAlign: true,
+   page:1,
+}
+const paganation = new Pagination('#tui-pagination-container', options);
+const page = paganation.getCurrentPage();
+paganation.on('afterMove', popular); 
 
 function formHandler(e) {
-  e.preventDefault();
+  e.preventDefault(e);
   name = refs.input.value.trim();
- 
+  
+  refs.gallery.innerHTML = ""
+
   getImg().then((photo) => {
-    
+    const {total_results} = photo.data
     renderGallery(photo.data)
-    // pagination.off('afterMove', popular);
-    
-    
+    paganation.reset(total_results)
   }).catch(error => error(console.log(error)));
 };
 
     const url ="https://image.tmdb.org/t/p/w500"
 function createGallery(array) {
-  console.log(array)
+  // console.log(array)
   return array.results.reduce((acc, { original_title, poster_path, backdrop_path }) => acc +
     `<a gallery__item" href="${original_title}">
   <img class="gallery__image" src="${url+poster_path}" alt="" loading="lazy"/>
@@ -60,34 +70,25 @@ function createGallery(array) {
   </a>`, "");
 };
 ////////////////////////////////////////////
-const options = {
-  totalItems: 0,
-        itemsPerPage: 20,
-        visiblePages: 5,
-    centerAlign: true,
-   page:1,
-}
-const pagination = new Pagination(document.getElementById('pagination'), options);
-const page = pagination.getCurrentPage();
-pagination.on('afterMove', popular); 
+
 
 
 function popular(event) {
+  refs.gallery.innerHTML = ""
   const currentPage = event.page;
-   refs.gallery.innerHTML = ""
-  getImg(currentPage).then((photo) => {
-renderGallery(photo.data)
-  })
+     getImg(currentPage).then((photo) => {
+       renderGallery(photo.data)
+      })
 }
 
-/////////////////////////////////////////////////////
+
 function renderGallery(array) {
-  pagination.reset(array.total_results) 
+  // paganation.reset(array.total_results) 
   refs.galleryContainer.insertAdjacentHTML("beforeend", createGallery(array));
     
 };
 
- 
+ ///////////////////////////////////////////////////
 
 
 // function resetCurrentPage() {
