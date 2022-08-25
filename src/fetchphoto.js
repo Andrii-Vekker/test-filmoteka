@@ -1,13 +1,15 @@
 import axios from "axios";
 export { getImg }
-import { name, currentPage } from "./index";
+import { name, pageNum } from "./index";
+import { options } from "./index";
+import { page } from "./index";
 const URL = `https://api.themoviedb.org/3`
 const KEY = `8d439eb5ac7a153643a933bcb130103b`
-
-async function getImg() {
+async function getImg(page) {
    try {
      const response = await axios.get
-        (`${URL}/search/movie?api_key=${KEY}&language=en-US&query=${name}`);
+         (`${URL}/search/movie?api_key=${KEY}&language=en-US&query=${name}&page=${page}`);
+      // console.log(response)
     return response
    }
    catch (error) {

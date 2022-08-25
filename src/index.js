@@ -1,19 +1,11 @@
 import SimpleLightbox from "simplelightbox";
-// import Pagination from 'tui-pagination';
-// import 'tui-pagination/dist/tui-pagination.min.css';
-// import 'tui-pagination/dist/tui-pagination.css';
 import Pagination from 'tui-pagination';
 import 'tui-pagination/dist/tui-pagination.css';
-// import "simplelightbox/dist/simple-lightbox.min.css";
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { getImg } from "./fetchphoto";
-export { name, count }
-
-// const URL = `https://api.themoviedb.org/3`;
-// const KEY = `8d439eb5ac7a153643a933bcb130103b`;
+export {name}
+export {page}
 
 let name = "";
-let count = 1;
 
 const refs = {
   form: document.querySelector(".search-form"),
@@ -25,57 +17,7 @@ const refs = {
 };
 
 
-
-
-
-
-// refs.gallery.addEventListener("click", galleryHandler)
-// refs.input.addEventListener("input", inputHandler);
 refs.form.addEventListener("submit", formHandler);
-// refs.loadMoreBtn.addEventListener("click", loadMoreBtnHandler);
-
-// function galleryHandler(e) {
-//   e.preventDefault();
-//   const lightbox = new SimpleLightbox(".gallery a", {
-//   captionsData: "alt",
-//   captionDelay: 250,
-//   captionPosition: "bottom",
-//   showCounter: true,
-//   enableKeyboard: true
-// });
-// }
-
-
-// function loadMoreBtnHandler(e) {
-//   e.preventDefault
- 
-//   if (name !== "") {
-//     getImg().then((photo) =>{
-//             if (count > photo.totalHits/40) {
-//           Notify.failure('Were sorry, but you ve reached the end of search results');
-//               refs.loadMoreBtn.classList.remove("loadMoreVisible");
-//        refs.loadMoreBtn.classList.add("loadMoreHidden");
-//       };
-//       renderGallery(photo)
-//     })
-//   .catch(error => console.log(error));
-//   };
-//   return count
-// };
-
-// function inputHandler(e) {
-//   if (refs.input.value === "") {
-//     // refs.galleryContainer.innerHTML = ""
-//     Notify.failure('Sorry, there are no images matching your search query. Please try again')
-//     };
-// }
-///////////////////////////////////////////////////////
-
-
-
-    
-  
-
 
 
 function formHandler(e) {
@@ -84,6 +26,7 @@ function formHandler(e) {
   getImg().then((photo) => {
     
     renderGallery(photo.data)
+    
    
   }).catch(error => error(console.log(error)));
     
@@ -91,19 +34,6 @@ function formHandler(e) {
     const url ="https://image.tmdb.org/t/p/w500"
 function createGallery(array) {
   console.log(array)
-  // const options = {
-  // totalItems: array.total_results,
-  // itemsPerPage: 20,
-  // visiblePages: 20,
-  //   page: 1,
-  //   centerAlign: false,
-  //   firstItemClassName: 'tui-first-child', 
-  //     lastItemClassName: 'tui-last-child'
-  // }
-  
-// const container = document.getElementById('tui-pagination-container');
-// const myPagination = new Pagination(container, options);
-// // instance.getCurrentPage();
   return array.results.reduce((acc, { original_title, poster_path, backdrop_path }) => acc +
     `<a gallery__item" href="${original_title}">
   <img class="gallery__image" src="${url+poster_path}" alt="" loading="lazy"/>
@@ -122,28 +52,47 @@ function createGallery(array) {
    </div>
   </a>`, "");
 };
-// https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
-  // console.log(`${URL}`)
+////////////////////////////////////////////
+const options = {
+  totalItems: 0,
+        itemsPerPage: 20,
+        visiblePages: 5,
+    centerAlign: true,
+   page:1,
+}
+const pagination = new Pagination(document.getElementById('pagination'), options);
+const page = pagination.getCurrentPage();
 
+pagination.on('afterMove', popular);
+
+function popular(event) {
+  const currentPage = event.page;
+  getImg(currentPage).then((photo) => {
+renderGallery(photo.data)
+  })
+}
+
+/////////////////////////////////////////////////////
 function renderGallery(array) {
-  // const pagination = new Pagination(document.getElementById('pagination'), {
-  //       totalItems: 0,
-  //       itemsPerPage: 20,
-  //       visiblePages: 5,
-  //   centerAlign: true,
-  //       page: 1
-  // });
-//   pagination.on('afterMove', (event) => {
-//     const currentPage = event.page;
-//       getImg().then((photo) => {
+  pagination.reset(array.total_results) 
+  refs.galleryContainer.insertAdjacentHTML("beforeend", createGallery(array));
     
-//     renderGallery(photo.data)
-   
-//   }).catch(error => error(console.log(error)));
-//      console.log(currentPage);
+};
+
+
+// pagination.on('afterMove', (event) => {
+//    options.page = event.page;
+//   console.log(options.page)
+//   getImg().then(photo => renderGallery(`${photo.data.page}`))
+  
 // });
+ 
+
+
+
 // pagination.on('beforeMove', (event) => {
-//     const currentPage = event.page;
+//   const currentPage = event.page;
+//   options.page = currentPage
 //   getImg().then((photo) => {
     
 //     renderGallery(photo.data)
@@ -154,40 +103,35 @@ function renderGallery(array) {
 //         // return true;
 //     }
 // });
-  pagination.reset(array.total_results)
-  const cardHeight = refs.gallery.clientHeight
-    refs.galleryContainer.insertAdjacentHTML("beforeend", createGallery(array));
-};
 
- const pagination = new Pagination(document.getElementById('pagination'), {
-        totalItems: 0,
-        itemsPerPage: 20,
-        visiblePages: 5,
-    centerAlign: true,
-        page: 1
-  });
 
-pagination.on('afterMove', (event) => {
-    const currentPage = event.page;
-      getImg().then((photo) => {
-    
-    renderGallery(photo.data)
-   
-  }).catch(error => error(console.log(error)));
-     console.log(currentPage);
-});
-pagination.on('beforeMove', (event) => {
-    const currentPage = event.page;
-  getImg().then((photo) => {
-    
-    renderGallery(photo.data)
-   
-  }).catch(error => error(console.log(error)));
-    if (currentPage === 10) {
-        return false;
-        // return true;
-    }
-});
+// function resetCurrentPage() {
+//   currentPage = 1;
+// }
+
+
+
+// export const genres = [
+//   { id: 28, name: 'Action' },
+//   { id: 12, name: 'Adventure' },
+//   { id: 16, name: 'Animation' },
+//   { id: 35, name: 'Comedy' },
+//   { id: 80, name: 'Crime' },
+//   { id: 99, name: 'Documentary' },
+//   { id: 18, name: 'Drama' },
+//   { id: 10751, name: 'Family' },
+//   { id: 14, name: 'Fantasy' },
+//   { id: 36, name: 'History' },
+//   { id: 27, name: 'Horror' },
+//   { id: 10402, name: 'Music' },
+//   { id: 9648, name: 'Mystery' },
+//   { id: 10749, name: 'Romance' },
+//   { id: 878, name: 'Sci-Fi' },
+//   { id: 10770, name: 'TV Movie' },
+//   { id: 53, name: 'Thriller' },
+//   { id: 10752, name: 'War' },
+//   { id: 37, name: 'Western' },
+// ];
 
 
 
