@@ -1,6 +1,11 @@
 import SimpleLightbox from "simplelightbox";
+// import Pagination from 'tui-pagination';
+// import 'tui-pagination/dist/tui-pagination.min.css';
+// import 'tui-pagination/dist/tui-pagination.css';
 import Pagination from 'tui-pagination';
 import 'tui-pagination/dist/tui-pagination.css';
+// import "simplelightbox/dist/simple-lightbox.min.css";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { getImg } from "./fetchphoto";
 export {name}
 export {page}
@@ -23,14 +28,16 @@ refs.form.addEventListener("submit", formHandler);
 function formHandler(e) {
   e.preventDefault();
   name = refs.input.value.trim();
+ 
   getImg().then((photo) => {
     
     renderGallery(photo.data)
+    // pagination.off('afterMove', popular);
     
-   
+    
   }).catch(error => error(console.log(error)));
-    
 };
+
     const url ="https://image.tmdb.org/t/p/w500"
 function createGallery(array) {
   console.log(array)
@@ -62,11 +69,12 @@ const options = {
 }
 const pagination = new Pagination(document.getElementById('pagination'), options);
 const page = pagination.getCurrentPage();
+pagination.on('afterMove', popular); 
 
-pagination.on('afterMove', popular);
 
 function popular(event) {
   const currentPage = event.page;
+   refs.gallery.innerHTML = ""
   getImg(currentPage).then((photo) => {
 renderGallery(photo.data)
   })
@@ -79,30 +87,7 @@ function renderGallery(array) {
     
 };
 
-
-// pagination.on('afterMove', (event) => {
-//    options.page = event.page;
-//   console.log(options.page)
-//   getImg().then(photo => renderGallery(`${photo.data.page}`))
-  
-// });
  
-
-
-
-// pagination.on('beforeMove', (event) => {
-//   const currentPage = event.page;
-//   options.page = currentPage
-//   getImg().then((photo) => {
-    
-//     renderGallery(photo.data)
-   
-//   }).catch(error => error(console.log(error)));
-//     if (currentPage === 10) {
-//         return false;
-//         // return true;
-//     }
-// });
 
 
 // function resetCurrentPage() {
