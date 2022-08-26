@@ -1,16 +1,16 @@
 import SimpleLightbox from "simplelightbox";
-// import Pagination from 'tui-pagination';
-// import 'tui-pagination/dist/tui-pagination.min.css';
-// import 'tui-pagination/dist/tui-pagination.css';
 import Pagination from 'tui-pagination';
 import 'tui-pagination/dist/tui-pagination.css';
 // import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { getImg } from "./fetchphoto";
 export {name}
-export {page}
+export { page }
+
+
 
 let name = "";
+
 
 const refs = {
   form: document.querySelector(".search-form"),
@@ -38,10 +38,11 @@ paganation.on('afterMove', popular);
 function formHandler(e) {
   e.preventDefault(e);
   name = refs.input.value.trim();
-  
+   
   refs.gallery.innerHTML = ""
 
   getImg().then((photo) => {
+    
     const {total_results} = photo.data
     renderGallery(photo.data)
     paganation.reset(total_results)
@@ -76,9 +77,9 @@ function createGallery(array) {
 function popular(event) {
   refs.gallery.innerHTML = ""
   const currentPage = event.page;
-  console.log(currentPage)
-  console.log(event)
-     getImg(currentPage).then((photo) => {
+
+  getImg(currentPage).then((photo) => {
+     
        renderGallery(photo.data)
       })
 }
