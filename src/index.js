@@ -76,6 +76,8 @@ function createGallery(array) {
 function popular(event) {
   refs.gallery.innerHTML = ""
   const currentPage = event.page;
+  console.log(currentPage)
+  console.log(event)
      getImg(currentPage).then((photo) => {
        renderGallery(photo.data)
       })
