@@ -1,108 +1,109 @@
 import SimpleLightbox from "simplelightbox";
+// import Pagination from 'tui-pagination';
+// import 'tui-pagination/dist/tui-pagination.min.css';
+// import 'tui-pagination/dist/tui-pagination.css';
 import Pagination from 'tui-pagination';
 import 'tui-pagination/dist/tui-pagination.css';
 // import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { getImg } from "./fetchphoto";
-export {name}
-export { page }
+export { name, count }
 
-
+// const URL = `https://api.themoviedb.org/3`;
+// const KEY = `8d439eb5ac7a153643a933bcb130103b`;
 
 let name = "";
-
+let count = 1;
 
 const refs = {
-  container: do
   form: document.querySelector(".search-form"),
   input: document.querySelector(".input"),
-  // formBtn: document.querySelector(".formBtn"),
+  formBtn: document.querySelector(".formBtn"),
   galleryContainer: document.querySelector(".gallery"),
-  // loadMoreBtn: document.querySelector(".load-more"),
+  loadMoreBtn: document.querySelector(".load-more"),
   gallery: document.querySelector(".gallery")
 };
 
 
-refs.form.addEventListener("submit", formHandler);
 
-const options = {
-  totalItems: 0,
-        itemsPerPage: 20,
-        visiblePages: 5,
-    centerAlign: true,
-   page:1,
-}
-const paganation = new Pagination('#tui-pagination-container', options);
-const page = paganation.getCurrentPage();
-paganation.on('afterMove', popular); 
+
+
+
+// refs.gallery.addEventListener("click", galleryHandler)
+// refs.input.addEventListener("input", inputHandler);
+refs.form.addEventListener("submit", formHandler);
+// refs.loadMoreBtn.addEventListener("click", loadMoreBtnHandler);
+
+// function galleryHandler(e) {
+//   e.preventDefault();
+//   const lightbox = new SimpleLightbox(".gallery a", {
+//   captionsData: "alt",
+//   captionDelay: 250,
+//   captionPosition: "bottom",
+//   showCounter: true,
+//   enableKeyboard: true
+// });
+// }
+
+
+// function loadMoreBtnHandler(e) {
+//   e.preventDefault
+ 
+//   if (name !== "") {
+//     getImg().then((photo) =>{
+//             if (count > photo.totalHits/40) {
+//           Notify.failure('Were sorry, but you ve reached the end of search results');
+//               refs.loadMoreBtn.classList.remove("loadMoreVisible");
+//        refs.loadMoreBtn.classList.add("loadMoreHidden");
+//       };
+//       renderGallery(photo)
+//     })
+//   .catch(error => console.log(error));
+//   };
+//   return count
+// };
+
+// function inputHandler(e) {
+//   if (refs.input.value === "") {
+//     // refs.galleryContainer.innerHTML = ""
+//     Notify.failure('Sorry, there are no images matching your search query. Please try again')
+//     };
+// }
+///////////////////////////////////////////////////////
+
+
+
+    
+  
+
+
 
 function formHandler(e) {
-  e.preventDefault(e);
+  e.preventDefault();
   name = refs.input.value.trim();
-   
-  refs.gallery.innerHTML = ""
-  function popular(event) {
-  refs.gallery.innerHTML = ""
-  const currentPage = event.page;
-
-  getImg(currentPage).then((photo) => {
-     
-       renderGallery(photo.data)
-      })
-}
-
-
-function renderGallery(array) {
-  // paganation.reset(array.total_results) 
-  refs.galleryContainer.insertAdjacentHTML("beforeend", createGallery(array));
-    
-};
-
-
-
-var bar = new ProgressBar.Circle(container, {
-  color: '#aaa',
-  // This has to be the same size as the maximum width to
-  // prevent clipping
-  strokeWidth: 4,
-  trailWidth: 1,
-  easing: 'easeInOut',
-  duration: 1400,
-  text: {
-    autoStyleContainer: false
-  },
-  from: { color: '#aaa', width: 1 },
-  to: { color: '#333', width: 4 },
-  // Set default step function for all animate calls
-  step: function(state, circle) {
-    circle.path.setAttribute('stroke', state.color);
-    circle.path.setAttribute('stroke-width', state.width);
-
-    var value = Math.round(circle.value() * 100);
-    if (value === 0) {
-      circle.setText('');
-    } else {
-      circle.setText(value);
-    }
-
-  }
-});
-bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar.text.style.fontSize = '2rem';
-
-bar.animate(1.0);
-
   getImg().then((photo) => {
     
-    const {total_results} = photo.data
     renderGallery(photo.data)
-    paganation.reset(total_results)
+   
   }).catch(error => error(console.log(error)));
+    
 };
-
     const url ="https://image.tmdb.org/t/p/w500"
 function createGallery(array) {
-  // console.log(array)
+  console.log(array)
+  // const options = {
+  // totalItems: array.total_results,
+  // itemsPerPage: 20,
+  // visiblePages: 20,
+  //   page: 1,
+  //   centerAlign: false,
+  //   firstItemClassName: 'tui-first-child', 
+  //     lastItemClassName: 'tui-last-child'
+  // }
+  
+// const container = document.getElementById('tui-pagination-container');
+// const myPagination = new Pagination(container, options);
+// // instance.getCurrentPage();
   return array.results.reduce((acc, { original_title, poster_path, backdrop_path }) => acc +
     `<a gallery__item" href="${original_title}">
   <img class="gallery__image" src="${url+poster_path}" alt="" loading="lazy"/>
@@ -121,42 +122,72 @@ function createGallery(array) {
    </div>
   </a>`, "");
 };
-////////////////////////////////////////////
+// https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
+  // console.log(`${URL}`)
 
+function renderGallery(array) {
+  // const pagination = new Pagination(document.getElementById('pagination'), {
+  //       totalItems: 0,
+  //       itemsPerPage: 20,
+  //       visiblePages: 5,
+  //   centerAlign: true,
+  //       page: 1
+  // });
+//   pagination.on('afterMove', (event) => {
+//     const currentPage = event.page;
+//       getImg().then((photo) => {
+    
+//     renderGallery(photo.data)
+   
+//   }).catch(error => error(console.log(error)));
+//      console.log(currentPage);
+// });
+// pagination.on('beforeMove', (event) => {
+//     const currentPage = event.page;
+//   getImg().then((photo) => {
+    
+//     renderGallery(photo.data)
+   
+//   }).catch(error => error(console.log(error)));
+//     if (currentPage === 10) {
+//         return false;
+//         // return true;
+//     }
+// });
+  pagination.reset(array.total_results)
+  const cardHeight = refs.gallery.clientHeight
+    refs.galleryContainer.insertAdjacentHTML("beforeend", createGallery(array));
+};
 
+ const pagination = new Pagination(document.getElementById('pagination'), {
+        totalItems: 0,
+        itemsPerPage: 20,
+        visiblePages: 5,
+    centerAlign: true,
+        page: 1
+  });
 
-
-
- ///////////////////////////////////////////////////
-
-
-// function resetCurrentPage() {
-//   currentPage = 1;
-// }
-
-
-
-// export const genres = [
-//   { id: 28, name: 'Action' },
-//   { id: 12, name: 'Adventure' },
-//   { id: 16, name: 'Animation' },
-//   { id: 35, name: 'Comedy' },
-//   { id: 80, name: 'Crime' },
-//   { id: 99, name: 'Documentary' },
-//   { id: 18, name: 'Drama' },
-//   { id: 10751, name: 'Family' },
-//   { id: 14, name: 'Fantasy' },
-//   { id: 36, name: 'History' },
-//   { id: 27, name: 'Horror' },
-//   { id: 10402, name: 'Music' },
-//   { id: 9648, name: 'Mystery' },
-//   { id: 10749, name: 'Romance' },
-//   { id: 878, name: 'Sci-Fi' },
-//   { id: 10770, name: 'TV Movie' },
-//   { id: 53, name: 'Thriller' },
-//   { id: 10752, name: 'War' },
-//   { id: 37, name: 'Western' },
-// ];
+pagination.on('afterMove', (event) => {
+    const currentPage = event.page;
+      getImg().then((photo) => {
+    
+    renderGallery(photo.data)
+   
+  }).catch(error => error(console.log(error)));
+     console.log(currentPage);
+});
+pagination.on('beforeMove', (event) => {
+    const currentPage = event.page;
+  getImg().then((photo) => {
+    
+    renderGallery(photo.data)
+   
+  }).catch(error => error(console.log(error)));
+    if (currentPage === 10) {
+        return false;
+        // return true;
+    }
+});
 
 
 
